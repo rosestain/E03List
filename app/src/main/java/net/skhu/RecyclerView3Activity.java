@@ -34,13 +34,9 @@ public class RecyclerView3Activity extends AppCompatActivity {
         arrayList.add(new Memo("one", new Date()));
         arrayList.add(new Memo("two", new Date()));
 
-        recyclerView3Adapter = new RecyclerView3Adapter(this, arrayList, new OnMemoClickListener() {
-            @Override
-            public void onMemoClicked(int index) {
-                memoIndex = index;
-                startMemoActivityForResult(REQUEST_EDIT, arrayList.get(index));
-            }
-        });
+        recyclerView3Adapter = new RecyclerView3Adapter(this, arrayList,
+                (index) -> startMemoActivityForResult(REQUEST_EDIT, arrayList.get(memoIndex = index)),
+                (count) -> {if(count <= 1) invalidateOptionsMenu();});
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

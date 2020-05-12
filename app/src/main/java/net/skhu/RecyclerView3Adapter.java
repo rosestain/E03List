@@ -49,12 +49,7 @@ public class RecyclerView3Adapter extends RecyclerView.Adapter<RecyclerView3Adap
             memo.setChecked(isChecked);
             if(isChecked) ++checkedCount;
             else --checkedCount;
-            if(isChecked && checkedCount == 1 || !isChecked && checkedCount == 0)
-            {
-                Activity activity = (Activity)textView1.getContext();
-                activity.invalidateOptionsMenu();
-
-            }
+            onCheckCountChangeListener.onCheckCountChanged(checkedCount);
         }
 
     }
@@ -63,11 +58,14 @@ public class RecyclerView3Adapter extends RecyclerView.Adapter<RecyclerView3Adap
     ArrayList<Memo> arrayList;
     int checkedCount = 0;
     OnMemoClickListener listener;
+    OnCheckCountChangeListener onCheckCountChangeListener;
 
-    public RecyclerView3Adapter(Context context, ArrayList<Memo> arrayList, OnMemoClickListener listener) {
+    public RecyclerView3Adapter(Context context, ArrayList<Memo> arrayList, OnMemoClickListener listener,
+                                OnCheckCountChangeListener onCheckCountChangeListener) {
         this.layoutInflater = LayoutInflater.from(context);
         this.arrayList = arrayList;
         this.listener = listener;
+        this.onCheckCountChangeListener = onCheckCountChangeListener;
     }
 
     @Override
