@@ -12,9 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ListIterator;
@@ -37,7 +34,13 @@ public class RecyclerView3Activity extends AppCompatActivity {
         arrayList.add(new Memo("one", new Date()));
         arrayList.add(new Memo("two", new Date()));
 
-        recyclerView3Adapter = new RecyclerView3Adapter(this, arrayList);
+        recyclerView3Adapter = new RecyclerView3Adapter(this, arrayList, new OnMemoClickListener() {
+            @Override
+            public void onMemoClicked(int index) {
+                memoIndex = index;
+                startMemoActivityForResult(REQUEST_EDIT, arrayList.get(index));
+            }
+        });
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -61,7 +64,7 @@ public class RecyclerView3Activity extends AppCompatActivity {
         if(id == R.id.action_create)
         {
             Intent intent = new Intent(this, MemoActivity.class);
-            startActivityForResult(intent, REQUEST_CREATE);
+            startMemoActivityForResult(REQUEST_CREATE, null);
             return true;
         }
         else if(id == R.id.action_remove)
@@ -106,5 +109,12 @@ public class RecyclerView3Activity extends AppCompatActivity {
         builder.setNegativeButton(R.string.no, null);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void startMemoActivityForResult(int requestCode, Memo memo)
+    {
+        Intent intent = new Intent(this, MemoActivity.class);
+        intent.putExtra("MEMO", memo);
+        startActivityForResult(intent, requestCode);
     }
 }

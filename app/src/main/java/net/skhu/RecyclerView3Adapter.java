@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -40,12 +39,7 @@ public class RecyclerView3Adapter extends RecyclerView.Adapter<RecyclerView3Adap
         public void onClick(View view)
         {
             int index = super.getAdapterPosition();
-            RecyclerView3Activity activity = (RecyclerView3Activity) textView1.getContext();
-            activity.memoIndex = index;
-            Memo memo = arrayList.get(index);
-            Intent intent = new Intent(activity, MemoActivity.class);
-            intent.putExtra("MEMO", memo);
-            activity.startActivityForResult(intent, RecyclerView3Activity.REQUEST_EDIT);
+            listener.onMemoClicked(index);
         }
 
         @Override
@@ -68,10 +62,12 @@ public class RecyclerView3Adapter extends RecyclerView.Adapter<RecyclerView3Adap
     LayoutInflater layoutInflater;
     ArrayList<Memo> arrayList;
     int checkedCount = 0;
+    OnMemoClickListener listener;
 
-    public RecyclerView3Adapter(Context context, ArrayList<Memo> arrayList) {
+    public RecyclerView3Adapter(Context context, ArrayList<Memo> arrayList, OnMemoClickListener listener) {
         this.layoutInflater = LayoutInflater.from(context);
         this.arrayList = arrayList;
+        this.listener = listener;
     }
 
     @Override
