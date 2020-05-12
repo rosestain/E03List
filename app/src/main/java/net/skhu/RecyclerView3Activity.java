@@ -34,9 +34,9 @@ public class RecyclerView3Activity extends AppCompatActivity {
         arrayList.add(new Memo("one", new Date()));
         arrayList.add(new Memo("two", new Date()));
 
-        recyclerView3Adapter = new RecyclerView3Adapter(this, arrayList,
-                (index) -> startMemoActivityForResult(REQUEST_EDIT, arrayList.get(memoIndex = index)),
-                (count) -> {if(count <= 1) invalidateOptionsMenu();});
+        recyclerView3Adapter = new RecyclerView3Adapter(this,
+                (memo) -> startMemoActivityForResult(REQUEST_EDIT, memo),
+                (count) -> {if(count <= 1) invalidateOptionsMenu(); });
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -65,7 +65,13 @@ public class RecyclerView3Activity extends AppCompatActivity {
         }
         else if(id == R.id.action_remove)
         {
-            deleteItems();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.confirm);
+            builder.setMessage(R.string.doYouWantToDelete);
+            builder.setPositiveButton(R.string.yes, (dialog, index) -> recyclerView3Adapter.removeCheckedMemo());
+            builder.setNegativeButton(R.string.no, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -79,9 +85,9 @@ public class RecyclerView3Activity extends AppCompatActivity {
         {
             Memo memo = (Memo)intent.getSerializableExtra("MEMO");
             if(requestCode == REQUEST_CREATE)
-                arrayList.add(memo);
+                recyclerView3Adapter.add(memo);
             else if(requestCode == REQUEST_EDIT)
-                arrayList.set(memoIndex, memo);
+                recyclerView3Adapter.update(memo);
             recyclerView3Adapter.notifyDataSetChanged();
         }
     }
